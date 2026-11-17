@@ -15,30 +15,42 @@ struct Cell {
  * be implemented iteratively, rather than recursively.
  */
 int lengthOf(Cell* list) {
-    /* TODO: Delete this comment and the next two lines, then implement this
-     * function.
-     */
-    (void) list;
-    return -1;
+    Cell* current = list;
+    if (list == nullptr) return 0;
+    int count = 0;
+
+    while (current != nullptr) {
+        current = current->next;
+        count++;
+    }
+
+    return count;
 }
 
 /* Frees all memory used by the given doubly-linked list. This function must
  * be implemented iteratively, rather than recursively.
  */
 void freeDoublyLinkedList(Cell* list) {
-    /* TODO: Delete this comment and the next line, then implement this
-     * function.
-     */
-    (void) list;
+    while (list != nullptr) {
+        Cell* next = list->next;
+        delete list;
+        list = next;
+    }
 }
+
 
 /* Adds the given value to the front of the specified doubly-linked list. */
 void prependTo(Cell*& list, const string& value) {
-    /* TODO: Delete this comment and the next two lines, then implement this
-     * function.
-     */
-    (void) list;
-    (void) value;
+    Cell* front = new Cell;
+    front->value = value;
+    if (list != nullptr) {
+        front->next = list;
+        list->prev = front;
+    }
+    else front->next = nullptr;
+    front->prev = nullptr;
+
+    list = front;
 }
 
 /* * * * * Test Cases Below This Point * * * * */

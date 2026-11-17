@@ -56,10 +56,8 @@ private:
      */
     ParticleCell* _head;
 
-    /* TODO: Add any new member variables or helper functions here. Make sure
-     * to delete this comment before submitting.
-     */
-
+    ParticleCell* _tail;
+    int _count;
 
 
     /* Allows SimpleTest to peek inside the ParticleSystem type. */

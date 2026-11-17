@@ -3,25 +3,36 @@
 using namespace std;
 
 ParticleSystem::ParticleSystem() {
-    /* TODO: Delete this comment and implement this function. */
+    _head = nullptr;
+    _tail = nullptr;
+   _count = 0;
 }
 
 ParticleSystem::~ParticleSystem() {
-    /* TODO: Delete this comment and implement this function. */
+    while (_head != nullptr) {
+        ParticleCell* next = _head->next;
+        delete _head;
+        _head = next;
+    }
 }
 
 int ParticleSystem::numParticles() const {
-    /* TODO: Delete this comment and the lines below, then
-     * implement this function.
-     */
-    return -1;
+    return _count;
 }
 
 void ParticleSystem::add(const Particle& data) {
-    /* TODO: Delete this comment and the lines below, then
-     * implement this function.
-     */
-    (void) data;
+    ParticleCell* newTail = new ParticleCell;
+    newTail->particle = data;
+    newTail->next = nullptr;
+    newTail->prev = _tail;
+    if (_tail != nullptr) {
+        _tail->next = newTail;
+    }
+    else {
+        _head = newTail;
+    }
+    _tail = newTail;
+    _count++;
 }
 
 void ParticleSystem::drawParticles() const {

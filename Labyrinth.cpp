@@ -2,12 +2,39 @@
 using namespace std;
 
 bool isPathToFreedom(MazeCell* start, const string& moves) {
-    /* TODO: Delete this comment and the next few lines, then implement
-     * this function.
-     */
-    (void) start;
-    (void) moves;
-    return false;
+    MazeCell* current = start;
+    bool items[3] = {};
+
+    if (start->whatsHere != Item::NOTHING) {
+        if (start->whatsHere == Item::POTION) items[0] = true;
+        else if (start->whatsHere == Item::SPELLBOOK) items[1] = true;
+        else if (start->whatsHere == Item::WAND) items[2] = true;
+    }
+
+    for (char c : moves) {
+        if (c == 'N') {
+            current = current->north;
+        }
+        else if (c == 'W') {
+            current = current->west;
+        }
+        else if (c == 'E') {
+            current = current->east;
+        }
+        else if (c == 'S') {
+            current = current->south;
+        }
+        if (current == nullptr) return false;
+        if (current->whatsHere != Item::NOTHING) {
+            if (current->whatsHere == Item::POTION) items[0] = true;
+            else if (current->whatsHere == Item::SPELLBOOK) items[1] = true;
+            else if (current->whatsHere == Item::WAND) items[2] = true;
+        }
+    }
+    for (bool i : items) {
+        if (i == false) return false;
+    }
+    return true;
 }
 
 
@@ -16,17 +43,6 @@ bool isPathToFreedom(MazeCell* start, const string& moves) {
 #include "Demos/MazeGenerator.h"
 
 /* Optional: Add your own custom tests here! */
-
-
-
-
-
-
-
-
-
-
-
 
 
 

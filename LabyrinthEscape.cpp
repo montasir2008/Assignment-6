@@ -14,11 +14,11 @@ using namespace std;
  * a compiler warning message. Come talk to us over EdStem if you'd like to learn
  * more about this!
  */
-const char MyName[] = "TODO: Replace this string with your name.";
+const char MyName[] = "Montasir";
 
 /* Change these constants to contain the paths out of your mazes. */
-const char ThePathOutOfMyMaze[] = "TODO: Replace this string with your path out of the normal maze.";
-const char ThePathOutOfMyTwistyMaze[] = "TODO: Replace this string with your path out of the twisty maze.";
+const char ThePathOutOfMyMaze[] = "SEENEWSWSWSNEESENN";
+const char ThePathOutOfMyTwistyMaze[] = "EEEESNWSNESN";
 
 PROVIDED_TEST("Escape from the labyrinth!") {
     /* A maze for you to escape from. This maze will be personalized
@@ -51,10 +51,9 @@ PROVIDED_TEST("Escape from the labyrinth!") {
 
 
 
-PROVIDED_TEST("Escape from the twisty labyrinth!") {
+PROVIDED_TEST("Escape from the twisty labyrinth!") {    
     /* Do not set a breakpoint here; set it at the EXPECT statement. */
     MazeCell* startLocation = twistyMazeFor(MyName);
-
     /* This test case is for Milestone 3.
      *
      *  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
