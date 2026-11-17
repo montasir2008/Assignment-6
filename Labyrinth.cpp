@@ -1,6 +1,25 @@
+/*
+ * File: Labyrinth.cpp
+ * -------------------
+ * Name:Montasir Mahir
+ * Course: CS106B
+ * Section: Thu 7:30 pm
+ * Description: This file checks whether a given path through a maze
+ * leads to escape. It follows the specified directions, keeps track
+ * of the items collected along the way, and returns whether the path
+ * is valid and all three required items have been collected.
+ */
 #include "Labyrinth.h"
 using namespace std;
 
+/*
+ * This function checks whether a sequence of moves successfully
+ * collects the items. It starts at the given
+ * maze cell and follows each direction, returning false if a move
+ * leads into a wall. It tracks the items found along the path,
+ * including the starting cell, and returns true only if all three
+ * items have been collected.
+ */
 bool isPathToFreedom(MazeCell* start, const string& moves) {
     MazeCell* current = start;
     bool items[3] = {};

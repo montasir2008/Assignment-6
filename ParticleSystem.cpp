@@ -1,13 +1,26 @@
+/*
+ * File: ParticleSystem.cpp
+ * ------------------------
+ * Name:Montasir Mahir
+ * Course: CS106B
+ * Section: Thu 7:30 pm
+ * Description: This file manages particles using a doubly-linked list.
+ * It handles adding, moving, drawing, and removing particles, along
+ * with different particle types and firework explosions.
+ */
+
 #include "ParticleSystem.h"
 #include "DrawParticle.h"
 using namespace std;
 
+/* Sets up an empty particle system. */
 ParticleSystem::ParticleSystem() {
     _head = nullptr;
     _tail = nullptr;
    _count = 0;
 }
 
+/* Frees all the particles in the list. */
 ParticleSystem::~ParticleSystem() {
     while (_head != nullptr) {
         ParticleCell* next = _head->next;
@@ -16,11 +29,49 @@ ParticleSystem::~ParticleSystem() {
     }
 }
 
+/* Moves a streamer based on its velocity. */
+void ParticleSystem::moveStreamer(Particle& particle) {
+    particle.x += particle.dx;
+    particle.y += particle.dy;
+}
+
+/* Moves a ballistic particle and adds gravity. */
+void ParticleSystem::moveBF(Particle& particle) {
+    particle.x += particle.dx;
+    particle.y += particle.dy;
+    particle.dy += 1;
+}
+
+/* Creates 50 random streamers when a firework explodes. */
+void ParticleSystem::explosion(const Particle& particle) {
+    if (particle.lifetime < 0 && inBounds(particle)) {
+        Particle randomF;
+        randomF.x = particle.x;
+        randomF.y = particle.y;
+        randomF.color = Color::RANDOM();
+        randomF.type = ParticleType::STREAMER;
+        for (int i = 0; i < 50; i++) {
+            randomF.dx = randomInteger(-3, 3);
+            randomF.dy = randomInteger(-3, 3);
+            randomF.lifetime = randomInteger(2,10);
+            add(randomF);
+        }
+    }
+}
+
+/* Checks if a particle is still on the screen. */
+bool ParticleSystem::inBounds(const Particle &current) {
+    return !(current.x >= SCENE_WIDTH || current.y >= SCENE_HEIGHT || current.x < 0 || current.y < 0);
+}
+
+/* Returns how many particles are in the system. */
 int ParticleSystem::numParticles() const {
     return _count;
 }
 
+/* Adds a valid particle to the end of the list. */
 void ParticleSystem::add(const Particle& data) {
+    if (!inBounds(data) || data.lifetime < 0) return;
     ParticleCell* newTail = new ParticleCell;
     newTail->particle = data;
     newTail->next = nullptr;
@@ -35,26 +86,159 @@ void ParticleSystem::add(const Particle& data) {
     _count++;
 }
 
+/* Draws all particles in the order they were added. */
 void ParticleSystem::drawParticles() const {
-    /* TODO: Delete this comment and implement this function. */
+    ParticleCell* current = _head;
+    while (current != nullptr) {
+        drawParticle(current->particle.x, current->particle.y, current->particle.color);
+        current = current->next;
+    }
 }
 
+/* Moves particles and removes ones that expire or leave the screen. */
 void ParticleSystem::moveParticles() {
-    /* TODO: Delete this comment and implement this function. */
+    ParticleCell* current = _head;
+
+    while (current != nullptr) {
+        if (current->particle.type == ParticleType::STREAMER) moveStreamer(current->particle);
+        else {
+            moveBF(current->particle);
+        }
+        current->particle.lifetime--;
+
+        ParticleCell* next;
+
+        if (!inBounds(current->particle) || current->particle.lifetime < 0) {
+            if (current->particle.type == ParticleType::FIREWORK) explosion(current->particle);
+            next = current->next;
+
+            if (current->prev != nullptr) {
+                current->prev->next = current->next;
+            } else {
+                _head = current->next;
+            }
+
+            if (current->next != nullptr) {
+                current->next->prev = current->prev;
+            } else {
+                _tail = current->prev;
+            }
+
+            delete current;
+            _count--;
+        }
+        else {
+            next = current->next;
+        }
+
+        current = next;
+    }
 }
+
 
 /* * * * * Test Cases Below This Point * * * * */
 
-/* TODO: Some milestones of this assignment will require you to add your own
- * test cases. Delete this comment and put those tests here.
- */
+STUDENT_TEST("Milestone 1: Constructor initializes all member variables.") {
+    ParticleSystem system;
+
+    EXPECT_EQUAL(system._head, nullptr);
+    EXPECT_EQUAL(system._tail, nullptr);
+    EXPECT_EQUAL(system._count, 0);
+}
+
+STUDENT_TEST("Milestone 1: Adding one particle updates head and tail.") {
+    ParticleSystem system;
+
+    Particle p;
+    p.x = 10;
+    p.y = 20;
+
+    system.add(p);
+
+    EXPECT_EQUAL(system._count, 1);
+    EXPECT_EQUAL(system.numParticles(), 1);
+
+    EXPECT_NOT_EQUAL(system._head, nullptr);
+    EXPECT_EQUAL(system._head, system._tail);
+
+    EXPECT_EQUAL(system._head->next, nullptr);
+    EXPECT_EQUAL(system._tail->prev, nullptr);
+}
+
+STUDENT_TEST("Milestone 1: Tail updates when adding multiple particles.") {
+    ParticleSystem system;
+
+    Particle first, second, third;
+    first.x = 1;
+    second.x = 2;
+    third.x = 3;
+
+    system.add(first);
+    system.add(second);
+    system.add(third);
+
+    EXPECT_EQUAL(system._count, 3);
+    EXPECT_EQUAL(system.numParticles(), 3);
+
+    EXPECT_EQUAL(system._head->particle.x, 1);
+    EXPECT_EQUAL(system._tail->particle.x, 3);
+
+    EXPECT_EQUAL(system._head->next->particle.x, 2);
+    EXPECT_EQUAL(system._tail->prev->particle.x, 2);
+
+    EXPECT_EQUAL(system._head->prev, nullptr);
+    EXPECT_EQUAL(system._tail->next, nullptr);
+}
+
+STUDENT_TEST("Milestone 1: Count and tail stay correct after many additions.") {
+    ParticleSystem system;
+
+    for (int i = 0; i < 100; i++) {
+        Particle p;
+        p.x = i;
+
+        system.add(p);
+
+        EXPECT_EQUAL(system._count, i + 1);
+        EXPECT_EQUAL(system.numParticles(), i + 1);
+        EXPECT_EQUAL(system._tail->particle.x, i);
+        EXPECT_EQUAL(system._tail->next, nullptr);
+    }
+
+    EXPECT_EQUAL(system._head->particle.x, 0);
+    EXPECT_EQUAL(system._tail->particle.x, 99);
+}
 
 
+STUDENT_TEST("Milestone 5: Explosion streamers move immediately.") {
+    ParticleSystem system;
 
+    Particle firework;
+    firework.type = ParticleType::FIREWORK;
+    firework.x = 100;
+    firework.y = 100;
+    firework.dx = 0;
+    firework.dy = 0;
+    firework.lifetime = 0;
 
+    system.add(firework);
+    system.moveParticles();
 
+    EXPECT_EQUAL(system.numParticles(), 50);
 
+    for (auto* curr = system._head;
+         curr != nullptr;
+         curr = curr->next) {
 
+        EXPECT_EQUAL(curr->particle.type, ParticleType::STREAMER);
+
+        // Newly created particles have already moved once.
+        EXPECT_EQUAL(curr->particle.x,
+                     100 + curr->particle.dx);
+        EXPECT_EQUAL(curr->particle.y,
+                     100 + curr->particle.dy);
+    }
+}
 
 /* * * * * Provided Tests Below This Point * * * * */
 

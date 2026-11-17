@@ -1,3 +1,13 @@
+/*
+ * File: ParticleSystem.h
+ * ----------------------
+ * Name:Montasir Mahir
+ * Course: CS106B
+ * Section: Thu 7:30 pm
+ * Description: This file defines the ParticleSystem class, which
+ * stores particles in a doubly-linked list and handles their
+ * movement, drawing, and removal.
+ */
 #pragma once
 
 #include "Particle.h"
@@ -59,6 +69,11 @@ private:
     ParticleCell* _tail;
     int _count;
 
+    // helper functions created to assist in moving particles.
+    bool inBounds(const Particle& current);
+    void moveStreamer(Particle& particle);
+    void moveBF(Particle& particle);
+    void explosion(const Particle& particle);
 
     /* Allows SimpleTest to peek inside the ParticleSystem type. */
     ALLOW_TEST_ACCESS();

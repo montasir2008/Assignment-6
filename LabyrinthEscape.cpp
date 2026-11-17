@@ -1,3 +1,15 @@
+/*
+ * File: LabyrinthEscape.cpp
+ * -------------------------
+ * Name:Montasir Mahir
+ * Course: CS106B
+ * Section: Thu 7:30 pm
+ * Description: This file stores the paths used to escape two
+ * labyrinths. It includes the paths through the regular and twisty mazes
+ * and tests whether each path successfully collects all three required
+ * items to escape.
+ */
+
 #include "Demos/MazeGenerator.h"
 #include "GUI/SimpleTest.h"
 using namespace std;

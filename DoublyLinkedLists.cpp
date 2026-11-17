@@ -1,3 +1,15 @@
+/*
+ * File: DoublyLinkedLists.cpp
+ * ---------------------------
+ * Name:Montasir Mahir
+ * Course: CS106B
+ * Section: Thu 7:30 pm
+ * Description: This file implements basic operations on a doubly linked
+ * list of strings. It includes functions to count the number of cells,
+ * free the memory for the list, and add new cells to the
+ * front while maintaining the links between cells.
+ */
+
 #include "GUI/MemoryDiagnostics.h"
 #include <string>
 using namespace std;
@@ -57,12 +69,6 @@ void prependTo(Cell*& list, const string& value) {
 #include "GUI/SimpleTest.h"
 
 /* Space for your own test cases, if you want to add them. */
-
-
-
-
-
-
 
 
 
